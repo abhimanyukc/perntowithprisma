@@ -1,4 +1,3 @@
-// server/index.js
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const cors = require('cors');
@@ -23,13 +22,17 @@ app.get('/api/todos', async (req, res) => {
   res.json(todos);
 });
 
-// Update a todo
+// Update a todo's title or completion status
 app.put('/api/todos/:id', async (req, res) => {
   const { id } = req.params;
-  const { completed } = req.body;
+  const { title, completed } = req.body;
+  const data = {};
+  if (title !== undefined) data.title = title;
+  if (completed !== undefined) data.completed = completed;
+
   const todo = await prisma.todo.update({
     where: { id: parseInt(id) },
-    data: { completed }
+    data
   });
   res.json(todo);
 });
